@@ -3,12 +3,12 @@ Section: ruby
 Priority: optional
 Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
 Uploaders: Balasankar C <balasankarc@autistici.org>
-Build-Depends: debhelper (>= 7.0.50~), gem2deb, ruby-rspec, rake
-Standards-Version: 3.9.5
+Build-Depends: debhelper (>= 7.0.50~), gem2deb, ruby-rspec, rake, ruby-actionpack
+Standards-Version: 3.9.6
 Vcs-Git: git://anonscm.debian.org/pkg-ruby-extras/ruby-ice-cube.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-ruby-extras/ruby-ice-cube.git;a=summary
 Homepage: http://seejohnrun.github.com/ice_cube/
-Testsuite: autopkgtest
+Testsuite: autopkgtest-pkg-ruby
 XS-Ruby-Versions: all
 
 Package: ruby-ice-cube
@@ -17,4 +17,9 @@ XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter
 # rake (>= 0, development), rspec (~> 2.12.0, development), active_support (>= 3.0.0, development), tzinfo (>= 0, development)
 Description: Ruby Date Recurrence Library
- ice_cube is a recurring date library for Ruby.  It allows for quick, programatic expansion of recurring date rules.
+ ice_cube is a recurring date library for Ruby.  It allows for quick, 
+ programatic expansion of recurring date rules. The API is modeled after 
+ iCalendar events, in a pleasant Ruby syntax. The power lies in the ability 
+ to specify multiple rules, and have ice_cube quickly figure out whether the 
+ schedule falls on a certain date (.occurs_on?), or what times it occurs at 
+ (.occurrences, .first, .all_occurrences).

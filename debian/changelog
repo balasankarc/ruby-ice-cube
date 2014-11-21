@@ -1,5 +1,5 @@
-ruby-ice-cube (0.11.1-1) UNRELEASED; urgency=medium
+ruby-ice-cube (0.11.1-1) unstable; urgency=medium
 
-  * Initial release (Closes: #nnnn)
+  * Initial release (Closes: #770475)
 
- -- Balasankar C <balasankarc@autistici.org>  Fri, 21 Nov 2014 21:08:01 +0530
+ -- Balasankar C <balasankarc@autistici.org>  Thu, 20 Nov 2014 19:41:45 +0530

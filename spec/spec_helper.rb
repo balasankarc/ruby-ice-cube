@@ -1,9 +1,9 @@
-begin
-  require 'simplecov'
-  SimpleCov.start
-rescue LoadError
+#begin
+#  require 'simplecov'
+#  SimpleCov.start
+#rescue LoadError
   # okay
-end
+#end
 
 require File.dirname(__FILE__) + '/../lib/ice_cube'
 
