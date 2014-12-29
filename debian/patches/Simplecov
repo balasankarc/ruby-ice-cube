@@ -1,4 +1,4 @@
-Description: <short summary of the patch>
+Description: SimpleCov removal
  Removing the simplecov portion from the test as the simplecov version needed
  for ice_cube is not yet packaged.
  .
@@ -8,8 +8,8 @@ Description: <short summary of the patch>
 Author: Balasankar C <balasankarc@autistici.org>
 
 
---- ruby-ice-cube-0.11.1.orig/spec/spec_helper.rb
-+++ ruby-ice-cube-0.11.1/spec/spec_helper.rb
+--- a/spec/spec_helper.rb
++++ b/spec/spec_helper.rb
 @@ -1,9 +1,9 @@
 -begin
 -  require 'simplecov'
@@ -23,5 +23,5 @@ Author: Balasankar C <balasankarc@autistici.org>
 -end
 +#end
  
- require File.dirname(__FILE__) + '/../lib/ice_cube'
+ require 'ice_cube'
  

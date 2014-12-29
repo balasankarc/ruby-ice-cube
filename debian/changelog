@@ -3,6 +3,7 @@ ruby-ice-cube (0.11.1-2) experimental; urgency=medium
   * Debian Update
   * Fixing the spec/spec_helper.rb file which was accidentally alterd due to
     incorrect patching 
+  * Fixed the relative path of lib/ice_cube.rb file in spec_helper
 
  -- Balasankar C <balasankarc@autistici.org>  Mon, 29 Dec 2014 19:51:59 +0530
 
