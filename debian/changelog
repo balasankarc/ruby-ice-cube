@@ -1,6 +1,11 @@
+ruby-ice-cube (0.12.1-1) unstable; urgency=medium
+
+  * Upstream update to version 0.12.1
+
+ -- Balasankar C <balasankarc@autistici.org>  Tue, 20 Jan 2015 21:07:22 +0530
+
 ruby-ice-cube (0.11.1-2) experimental; urgency=medium
 
-  * Debian Update
   * Fixing the spec/spec_helper.rb file which was accidentally alterd due to
     incorrect patching 
   * Fixed the relative path of lib/ice_cube.rb file in spec_helper
