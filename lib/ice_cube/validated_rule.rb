@@ -46,6 +46,14 @@ module IceCube
       @time
     end
 
+    def skipped_for_dst
+      @uses -= 1 if @uses > 0
+    end
+
+    def dst_adjust?
+      @validations[:interval].any? &:dst_adjust?
+    end
+
     def to_s
       builder = StringBuilder.new
       @validations.each do |name, validations|
@@ -98,6 +106,11 @@ module IceCube
     end
 
     private
+    def normalized_interval(interval)
+      int = interval.to_i
+      raise ArgumentError, "'#{interval}' is not a valid input for interval. Please pass an integer." unless int > 0
+      int
+    end
 
     def finds_acceptable_time?
       validation_names.all? do |type|
@@ -132,12 +145,11 @@ module IceCube
     end
 
     def shift_time_by_validation(res, vals)
-      return unless res.min
-      type = vals.first.type # get the jump type
-      dst_adjust = !vals.first.respond_to?(:dst_adjust?) || vals.first.dst_adjust?
-      wrapper = TimeUtil::TimeWrapper.new(@time, dst_adjust)
-      wrapper.add(type, res.min)
-      wrapper.clear_below(type)
+      return unless (interval = res.min)
+      validation = vals.first
+      wrapper = TimeUtil::TimeWrapper.new(@time, validation.dst_adjust?)
+      wrapper.add(validation.type, interval)
+      wrapper.clear_below(validation.type)
 
       # Move over DST if blocked, no adjustments
       if wrapper.to_time <= @time
