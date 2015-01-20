@@ -10,7 +10,7 @@ module IceCube
       it "should make a #{type} round trip with to_yaml [#47]" do
         schedule = Schedule.new(t0 = Time.now)
         schedule.add_recurrence_rule Rule.send(type, 3)
-        Schedule.from_yaml(schedule.to_yaml).first(3).should == schedule.first(3)
+        Schedule.from_yaml(schedule.to_yaml).first(3).inspect.should == schedule.first(3).inspect
       end
     end
 
@@ -290,7 +290,7 @@ module IceCube
 
       symbol_yaml = Schedule.from_hash(symbol_data).to_yaml
       string_yaml = Schedule.from_hash(string_data).to_yaml
-      symbol_yaml.should == string_yaml
+      YAML.load(symbol_yaml).should == YAML.load(string_yaml)
     end
 
   end

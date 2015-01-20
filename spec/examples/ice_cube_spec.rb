@@ -661,28 +661,34 @@ describe IceCube::Schedule do
     rule.to_hash.should_not have_key(:until)
   end
 
-  # Full required for rules account for @interval
-
-  %w{Secondly Minutely Hourly Daily Weekly Monthly Yearly}.each do |t|
-
-    klass = eval "IceCube::#{t}Rule"
-    method = t.downcase.to_sym
-
-    describe klass do
-      describe :full_required? do
-
-        it 'should return true when interval is > 1' do
-          rule = IceCube::Rule.send(method, 2)
-          rule.full_required?.should be_true
-        end
-
-        it 'should return false when interval is <= 1' do
-          rule = IceCube::Rule.send(method)
-          rule.full_required?.should be_false
-        end
-
+  it 'should not have ridiculous load times for minutely on next_occurrence (from sidetiq)' do
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.minutely(1800))
       end
     end
+  end
+
+  it 'should not have ridiculous load times for every 10 on next_occurrence #210' do
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.hourly.minute_of_hour(0, 10, 20, 30, 40, 50))
+      end
+    end
+    quick_attempt_test do
+      IceCube::Schedule.new(Time.utc(2010, 1, 1)) do |s|
+        s.add_recurrence_rule(IceCube::Rule.daily)
+      end
+    end
+  end
+
+  def quick_attempt_test
+    time = Time.now
+    10.times do
+      (yield).next_occurrence(Time.now)
+    end
+    total = Time.now - time
+    total.should be < 0.1
   end
 
 end

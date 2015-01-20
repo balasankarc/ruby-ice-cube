@@ -26,6 +26,15 @@ describe IceCube::Schedule do
     schedule.start_time.should == Time.local(dt.year, dt.month, dt.day, dt.hour, dt.min, dt.sec)
   end
 
+  describe :next_occurrence do
+
+    it 'should not raise an exception when calling next occurrence with no remaining occurrences' do
+      schedule = IceCube::Schedule.new Time.now
+      lambda { schedule.next_occurrence }.should_not raise_error
+    end
+
+  end
+
   describe :duration do
 
     it 'should be based on end_time' do
@@ -281,6 +290,22 @@ describe IceCube::Schedule do
       answers.should == [t0, t1]
     end
 
+  end
+
+  describe :all_occurrences_enumerator do
+    it 'should be equivalent to all_occurrences in terms of arrays' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.all_occurrences == schedule.all_occurrences_enumerator.to_a 
+    end
+  end
+
+  describe :remaining_occurrences_enumerator do
+    it 'should be equivalent to remaining_occurrences in terms of arrays' do
+      schedule = IceCube::Schedule.new(Time.now, :duration => IceCube::ONE_HOUR)
+      schedule.add_recurrence_rule IceCube::Rule.daily.until(Time.now + 3 * IceCube::ONE_DAY)
+      schedule.remaining_occurrences == schedule.remaining_occurrences_enumerator.to_a 
+    end
   end
 
   describe :all_occurrences do

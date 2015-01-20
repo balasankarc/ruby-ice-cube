@@ -1,4 +1,5 @@
 require 'date'
+require 'time'
 
 module IceCube
   module TimeUtil
@@ -15,6 +16,8 @@ module IceCube
       :june => 6, :july => 7, :august => 8, :september => 9, :october => 10,
       :november => 11, :december => 12
     }
+
+    CLOCK_VALUES = [:year, :month, :day, :hour, :min, :sec]
 
     # Provides a Time.now without the usec, in the reference zone or utc offset
     def self.now(reference=Time.now)
@@ -40,7 +43,7 @@ module IceCube
     def self.ensure_time(time, date_eod = false)
       case time
       when DateTime
-        warn "IceCube: DateTime support is deprecated (please use Time)"
+        warn "IceCube: DateTime support is deprecated (please use Time) at: #{ caller[2] }"
         Time.local(time.year, time.month, time.day, time.hour, time.min, time.sec)
       when Date
         date_eod ? end_of_date(time) : time.to_time
@@ -67,12 +70,16 @@ module IceCube
       end
     end
 
-    # Deserialize a time serialized with serialize_time
+    # Deserialize a time serialized with serialize_time or in ISO8601 string format
     def self.deserialize_time(time_or_hash)
-      if time_or_hash.is_a?(Time)
+      case time_or_hash
+      when Time
         time_or_hash
-      elsif time_or_hash.is_a?(Hash)
-        time_or_hash[:time].in_time_zone(time_or_hash[:zone])
+      when Hash
+        hash = FlexibleHash.new(time_or_hash)
+        hash[:time].in_time_zone(hash[:zone])
+      when String
+        Time.parse(time_or_hash)
       end
     end
 
@@ -84,7 +91,7 @@ module IceCube
     def self.restore_deserialized_offset(time, orig_offset_str)
       return time if time.respond_to?(:time_zone) ||
                      time.getlocal(orig_offset_str).utc_offset == time.utc_offset
-      warn 'IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST'
+      warn "IceCube: parsed Time from nonlocal TZ. Use ActiveSupport to fix DST at: #{ caller[0] }"
       time.localtime(orig_offset_str)
     end
 
@@ -112,8 +119,8 @@ module IceCube
 
     # Convert a symbol to a numeric month
     def self.sym_to_month(sym)
-      return wday = sym if (1..12).include? sym
       MONTHS.fetch(sym) do |k|
+        return wday = sym.to_i if MONTHS.values.any? { |i| i.to_s == sym.to_s }
         raise ArgumentError, "Expecting Fixnum or Symbol value for month. " \
                              "No such month: #{k.inspect}"
       end
@@ -122,8 +129,8 @@ module IceCube
 
     # Convert a symbol to a wday number
     def self.sym_to_wday(sym)
-      return sym if (0..6).include? sym
       DAYS.fetch(sym) do |k|
+        return sym.to_i if DAYS.values.any? { |i| i.to_s == sym.to_s }
         raise ArgumentError, "Expecting Fixnum or Symbol value for weekday. " \
                              "No such weekday: #{k.inspect}"
       end
@@ -207,6 +214,10 @@ module IceCube
       if time.dst? ^ one_hour_ago.dst?
         (time.utc_offset - one_hour_ago.utc_offset) / ONE_HOUR
       end
+    end
+
+    def self.same_clock?(t1, t2)
+      CLOCK_VALUES.all? { |i| t1.send(i) == t2.send(i) }
     end
 
     # A utility class for safely moving time around
