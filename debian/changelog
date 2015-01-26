@@ -1,7 +1,7 @@
 ruby-ice-cube (0.12.1-1) unstable; urgency=medium
 
   * Upstream update to version 0.12.1
-    incorrect patching 
+  * Fix incorrect patching in source git (remove already applied patch)
   * Fixed the relative path of lib/ice_cube.rb file in spec_helper
 
  -- Balasankar C <balasankarc@autistici.org>  Tue, 20 Jan 2015 21:07:22 +0530
